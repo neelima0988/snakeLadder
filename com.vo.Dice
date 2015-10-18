@@ -1,0 +1,27 @@
+package com.vo;
+public class Dice {
+
+	private final int min;
+	private final int max;
+	private final int numOfDice;
+
+	public Dice(int min, int max, int numOfDice) {
+		this.min = min;
+		this.max = max;
+		if (numOfDice > 2) {
+			numOfDice = 2;
+		}
+		this.numOfDice = numOfDice;
+
+	}
+
+	public int roll() {
+		int rollValue = 0;
+		if (numOfDice == 2) {
+			rollValue = (int) (min + Math.random() * max);
+		}
+		rollValue += (int) (min + Math.random() * max);
+		return rollValue;
+	}
+
+}
