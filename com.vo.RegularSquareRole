@@ -1,0 +1,11 @@
+package com.vo;
+
+import com.vo.interfaces.SquareRole;
+
+
+public final class RegularSquareRole extends SquareRole {
+
+	public RegularSquareRole(Square s) {
+		super(s);
+	}
+}
