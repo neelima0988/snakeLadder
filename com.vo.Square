@@ -1,0 +1,107 @@
+package com.vo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.game.impl.SLBoard;
+import com.vo.interfaces.SquareRole;
+ 
+
+public final class Square {
+
+	Player player;
+	private int position;
+	SquareRole squareRole;
+	public SLBoard board = null;
+	private boolean hasSnake;
+
+	public boolean isSnakeSquare() {
+		return hasSnake;
+	}
+
+	public Square(int position, SLBoard board) {
+		this.position = position;
+		this.board = board;
+	}
+
+	/**
+	 * @return the position
+	 */
+	public int getPosition() {
+		return position;
+	}
+
+	public void enter(Player player) {
+		squareRole.enter(player);
+		player.setSquare(this);
+	}
+
+	/**
+	 * @return the squareRole
+	 */
+	public SquareRole getSquareRole() {
+		return squareRole;
+	}
+
+	/**
+	 * @param squareRole
+	 *            the squareRole to set
+	 */
+	public void setSquareRole(SquareRole squareRole) {
+		this.squareRole = squareRole;
+	}
+
+	/**
+	 * @return the player
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+	/**
+	 * @param player
+	 *            the player to set
+	 */
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public void leave(Player p) {
+		squareRole.leave(p);
+	}
+
+	public Square moveAndLand(int moves) {
+		return squareRole.moveAndLand(moves);
+	}
+
+	public Square findRelativeSquare(int shift) {
+		// TODO Auto-generated method stub
+		return board.findSquare(position, shift);
+	}
+
+	public Square findFirstSquare() {
+		return board.firstSquare();
+	}
+
+	public Square landHereOrGoHome() {
+		return squareRole.landHereOrGoHome();
+	}
+
+	public boolean isOccupied() {
+		// TODO Auto-generated method stub
+		return player != null;
+	}
+
+	/**
+	 * @param hasSnake
+	 *            the hasSnake to set
+	 */
+	public void setHasSnake(boolean hasSnake) {
+		this.hasSnake = hasSnake;
+	}
+
+	public boolean isLastSquare() {
+		// TODO Auto-generated method stub
+		return squareRole.isLastSquare();
+	}
+}
