@@ -1,0 +1,77 @@
+package com.vo;
+
+public final class Player {
+
+	private String name;
+	private Square square;
+	private int numberOfChances = 0;
+
+	public Player(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the numberOfChances
+	 */
+	public int getNumberOfChances() {
+		return numberOfChances;
+	}
+
+	/**
+	 * @param numberOfChances
+	 *            - means how many times player die to win the game
+	 */
+	public void setNumberOfChances(int numberOfChances) {
+		this.numberOfChances = numberOfChances;
+	}
+
+	/**
+	 * @return the squarePosition
+	 */
+	public Square getSquare() {
+		return square;
+	}
+
+	/**
+	 * @param squarePosition
+	 *            the squarePosition to set
+	 */
+	public void setSquare(Square squarePosition) {
+		this.square = squarePosition;
+	}
+
+	public void moveForward(int moves) {
+		if (moves < 0) {
+			System.out.println("Not a Valid Move");
+		}
+		square.leave(this);
+		square = square.moveAndLand(moves);
+		square.enter(this);
+		this.setNumberOfChances(getNumberOfChances() + 1);
+	}
+
+	public boolean wins() {
+		return square.isLastSquare();
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+}
+      
