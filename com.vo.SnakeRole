@@ -1,0 +1,35 @@
+package com.vo;
+
+import com.vo.interfaces.SquareRole;
+
+
+public class SnakeRole extends SquareRole {
+
+	private int stepDown;
+
+	public SnakeRole(Square sq) {
+		super(sq);
+	}
+
+	public SnakeRole(Square sq, int stepDown) {
+		super(sq);
+		if (stepDown > 0) {
+			System.out.println("snake stepdown should be negative");
+		}
+		this.stepDown = stepDown;
+	}
+
+	@Override
+	public Square landHereOrGoHome() {
+
+		System.out.println("snake from" + (square.getPosition() + 1) + " to "
+				+ (destination().getPosition() + 1));
+
+		return destination().landHereOrGoHome();
+	}
+
+	private Square destination() {
+		// TODO Auto-generated method stub
+		return square.findRelativeSquare(stepDown);
+	}
+}
