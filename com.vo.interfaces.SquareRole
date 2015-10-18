@@ -1,0 +1,78 @@
+package com.vo.interfaces;
+import com.game.impl.Game;
+import com.vo.Player;
+import com.vo.Square;
+
+
+public class SquareRole {
+
+	protected Square square = null;
+
+	public SquareRole(Square sq) {
+		this.square = sq;
+	}
+
+	public boolean isOccupied() {
+		return square.getPlayer() != null;
+	}
+
+	public boolean isFirstSquare() {
+		return false;
+	}
+
+	public boolean isLastSquare() {
+		return false;
+	}
+
+	public boolean isLadderSquare() {
+		return false;
+	}
+
+	public boolean isSnakeSquare() {
+		return false;
+	}
+
+	public void leave(Player p) {
+		square.setPlayer(null);
+	}
+
+	public Square moveAndLand(int moves) {
+
+		int winPosition = Game.winPosition;
+
+		int currentPosition = square.getPosition();
+		System.out.println("current position :: " + (currentPosition + 1));
+		System.out.println("move  - " + moves + " -  positions ahead");
+
+		if (currentPosition + moves > winPosition) {
+			System.out.println("should not go beyond the " + winPosition + 1);
+			return square;
+		} else {
+			System.out.println(square.board.game.currentPlayer()
+					+ " will Move from" + (square.getPosition() + 1)
+					+ "to position"
+					+ (square.findRelativeSquare(moves).getPosition() + 1));
+		}
+		return square.findRelativeSquare(moves).landHereOrGoHome();
+	}
+
+	public void enter(Player player) {
+		square.setPlayer(player);
+		player.setSquare(square);
+	}
+
+	public Square landHereOrGoHome() {
+
+		if (square.isOccupied()) {
+			System.out.println("square " + (square.getPosition() + 1)
+					+ " is occupied by " + square.getPlayer());
+
+			Player p = square.getPlayer();
+			p.setSquare(square.findFirstSquare());
+
+		} else {
+			System.out.println("land at" + (square.getPosition() + 1));
+		}
+		return square.isOccupied() ? square.findFirstSquare() : square;
+	}
+}
