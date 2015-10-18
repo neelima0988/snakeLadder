@@ -1,0 +1,24 @@
+package com.vo.interfaces;
+import java.util.List;
+
+import com.exceptionHandling.ValidationException;
+import com.vo.Square;
+
+
+
+
+
+public interface IBoard {
+
+	public  void makeSquares(int numSquares) ;
+	
+	public void makeSnakes(int[][] snakePositions) throws ValidationException;
+	
+	public void makeLadders(int [][] ladderPositions) throws ValidationException;
+	
+	public Square firstSquare();
+	
+	public List<Square> getSquares();
+	
+	
+}
