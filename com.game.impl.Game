@@ -1,0 +1,237 @@
+package com.game.impl;
+
+import java.awt.Frame;
+import java.awt.Label;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+
+import com.exceptionHandling.ApplicationException;
+import com.exceptionHandling.ValidationException;
+import com.vo.Dice;
+import com.vo.Player;
+import com.vo.interfaces.IBoard;
+
+public class Game {
+
+	private LinkedList<Player> players = new LinkedList<Player>();
+
+	private IBoard board = null;
+
+	private Player winner = null;
+
+	public static int winPosition;
+
+	private int currentPlayerIndex;
+
+	/**
+	 * 
+	 * @param players
+	 * @param numOfSquares
+	 * @param ladderPositions
+	 * @param snakePositions
+	 * @throws ApplicationException 
+	 */
+	public Game(String[] players, int numOfSquares, int[][] ladderPositions,
+			int[][] snakePositions) throws ApplicationException {
+		winPosition = numOfSquares;
+		createBoard(numOfSquares, ladderPositions, snakePositions);
+		createPlayers(players);
+		play();
+	}
+
+	/**
+	 * 
+	 * @param numOfSquares
+	 * @param ladderPositions
+	 * @param snakePositions
+	 * @throws ApplicationException 
+	 */
+	private void createBoard(int numOfSquares, int[][] ladderPositions,
+			int[][] snakePositions) throws ApplicationException {
+		// number of squares;
+		// ladder positions;
+		// snake positions
+		try {
+			board = new SLBoard(numOfSquares, ladderPositions, snakePositions, this);
+		} catch (ValidationException e) {
+			// TODO Auto-generated catch block
+			throw new ApplicationException(e.getMessage());
+		}
+
+	}
+
+	/**
+	 * 
+	 * @param playerNames
+	 */
+	private void createPlayers(String[] playerNames) {
+		for (String playerName : playerNames) {
+			Player newPlayer = new Player(playerName);
+			players.add(newPlayer);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void play() {
+		if (players.isEmpty()) {
+			System.out.println("No Players to Play");
+		}
+		if (board == null) {
+			System.out.println("No Boards to play");
+		}
+
+		startGame();
+
+		Dice dice = new Dice(1, 6, 2);
+
+		while (notOver()) {
+			int roll = dice.roll();
+			movePlayer(roll);
+			System.out.println("State : " + this);
+			currentPlayerIndex++;
+		}
+
+	}
+
+	private void startGame() {
+		placePlayersAtStartSquare();
+		winner = null;
+
+	}
+
+	private void placePlayersAtStartSquare() {
+		currentPlayerIndex = 0;
+		for (Player player : players) {
+			board.firstSquare().enter(player);
+		}
+	}
+
+	private boolean notOver() {
+		return players.size() > 1;
+	}
+
+	private void movePlayer(int roll) {
+
+		Player currentPlayer = currentPlayer();
+
+		System.out.println(currentPlayer + " turn ");
+
+		currentPlayer.moveForward(roll);
+
+		if (currentPlayer.wins()) {
+
+			winner = currentPlayer;
+
+			System.out.println("-----------------Winner is :: " + currentPlayer
+					+ "--------------");
+			System.out.println("-----------------" + currentPlayer
+					+ " has won in " + currentPlayer.getNumberOfChances()
+					+ " number of chances --------------");
+
+			players.remove(currentPlayer);
+			board.getSquares().get(winPosition-1).setPlayer(null);
+			
+			try {
+
+				Thread.currentThread().sleep(1000);
+
+			} catch (InterruptedException e) {
+
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	public Player currentPlayer() {
+
+		if (players.size() > 0 && currentPlayerIndex < players.size()) {
+			Player nextPlayer = players.get(currentPlayerIndex);
+			return nextPlayer;
+		} else {
+			currentPlayerIndex = 0;
+			return players.get(currentPlayerIndex);
+		}
+
+	}
+
+	@Override
+	public String toString() {
+		String str = new String();
+		str = "-----------------------------------current State ------------------------------";
+		for (Player player : players) {
+			str += "\n" + player.getName() + " is at square "
+					+ (player.getSquare().getPosition() + 1);
+		}
+		return str;
+	}
+
+	public static void main(String[] args) {
+
+		String startGame = "y";
+
+		Frame f = new Frame();
+		f.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		f.add(new Label("Let's Play snake and Ladder!"));
+		
+		f.setSize(500, 500);
+		f.setVisible(true);
+
+		int[][] ladderPositions = { { 4, 14 }, { 9, 31 }, { 20, 38 },
+				{ 28, 84 }, { 40, 59 }, { 51, 67 }, { 63, 81 }, { 71, 91 } };
+		int[][] snakePositions = { { 17, 7 }, { 62, 19 }, { 64, 60 },
+				{ 99, 78 }, { 95, 75 }, { 93, 73 }, { 54, 34 }, { 87, 24 } };
+		String[] contestants = { "Neelima", "Monica", "Lucky" };
+
+		int ladderWinnerPosition = 100;
+
+		BufferedReader myInput = new BufferedReader(new InputStreamReader(
+				System.in));
+		// Print the welcome screen and instructions
+		System.out.println("\t\t\t\t\t\tWelcome To Snakes And Ladders\n\n");
+		System.out.println("\t\t\t\t\t\t\tInstructions:");
+		System.out.println("\t\t\t This program will simulate a regular snakes and ladders game, where you will be");
+		System.out.println("\t\t\t playing between your friends.All contestants will start at square 1, and the first one to");
+		System.out.println("\t\t\t square 100 wins, however, there will be preset squares which will be the snakes or ladders.");
+		System.out
+				.println("\t\t\t Once you land on top of a snake you go down a few squares, and move up if you land");
+		System.out
+				.println("\t\t\t\t\t\t on the bottom of a ladder. Good Luck and Have FUN!!!");
+
+		System.out
+				.println("-----------------------------------------------------Game Board-----------------------------------------------------------------------------");
+		System.out.print("Do you want to play? Y or N >  "); // ask user if
+																	// we wants
+																	// to play
+																	// the game
+		try {
+			startGame = myInput.readLine();
+			
+			if ("y".equalsIgnoreCase(startGame)) {
+				System.out.print("<Provide Number of Players >  ");
+				String numOfPlayers =  myInput.readLine();
+				System.out.println("Provide All player names in comma(,) separated form");
+				String NameOfPlayers =  myInput.readLine();
+				String[] contestantsPlayers = NameOfPlayers.split(",");
+				
+				Game game = new Game(contestantsPlayers, ladderWinnerPosition,
+						ladderPositions, snakePositions);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}catch(ApplicationException appE){
+			appE.printStackTrace();
+		}
+
+	}
+}
