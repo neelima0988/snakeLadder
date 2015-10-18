@@ -1,0 +1,41 @@
+package com.vo;
+
+import com.vo.interfaces.SquareRole;
+
+
+public final class LadderRole extends SquareRole {
+
+	private int stepUp;
+	private boolean hasSnake;
+
+	public LadderRole(Square sq) {
+		super(sq);
+	}
+
+	public LadderRole(Square sq, int stepUp) {
+		super(sq);
+		if (stepUp <= 0) {
+			System.out.println("ladder stepup should be positive");
+		}
+		this.stepUp = stepUp;
+	}
+
+	@Override
+	public Square landHereOrGoHome() {
+
+		System.out.println("ladder from" + (square.getPosition() + 1)
+				+ "to position " + (destination().getPosition() + 1));
+
+		return destination().landHereOrGoHome();
+	}
+
+	private Square destination() {
+		return square.findRelativeSquare(stepUp);
+	}
+
+	@Override
+	public boolean isLadderSquare() {
+		return true;
+	}
+
+}
