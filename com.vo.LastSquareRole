@@ -1,0 +1,17 @@
+package com.vo;
+
+import com.vo.interfaces.SquareRole;
+
+
+public class LastSquareRole extends SquareRole {
+
+	public LastSquareRole(Square sq) {
+		super(sq);
+	}
+
+	@Override
+	public boolean isLastSquare() {
+		return true;
+	}
+
+}
